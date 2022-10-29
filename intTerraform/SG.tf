@@ -1,7 +1,6 @@
 resource "aws_security_group" "web_ssh" {
   name        = "ssh-access"
   description = "open ssh traffic"
-  vpc_id = module.vpc.id
  
 
   ingress {
