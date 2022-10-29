@@ -19,9 +19,7 @@ Install python3-pip as well as python3-venv for the build stage.
 Install terraform
 
 2.  Configuring Jenkins
-In order for Terraform to actually get AWS variables; it is highly recommended to set up the AWS access/secret keys in Jenkins as secret text files. Alternatively you run the risk of exposing your credentials if you were to upload a tfvars file or declare them in your repository as plaintext.
-
-Add github personal access token. Add Keeprunning Plugin. Add extended email plugin. Add slack plugin
+In order for Terraform to actually get AWS variables; it is highly recommended to set up the AWS access/secret keys in Jenkins as secret text files. Alternatively you run the risk of exposing your credentials if you were to upload a tfvars file or declare them in your repository as plaintext. Add github personal access token. Add Keeprunning Plugin. Add extended email plugin. Add slack plugin
 
 3. Create Multi-branch pipeline
 Once the pipeline is added; and the Jenkinsfile in this repository is read it will do as follows.
