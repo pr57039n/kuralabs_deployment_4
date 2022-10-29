@@ -11,29 +11,30 @@ provider "aws" {
 
 data "aws_availability_zones" "azs" {}
 
-module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
+#VPC
+resource "aws_vpc" "my-vpc" {
+    cidr_block = "172.16.0.0/16"
+    enable_dns_hostnames = "true"
 
-  name = "my-vpc"
-  cidr = "10.0.0.0/16"
-
-  azs             = data.aws_availability_zones.azs.names
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
-
-  enable_nat_gateway = true
-  single_nat_gateway = true
-
-  tags = {
-    Name = "my-vpc"
-  }
+    tags = {
+       "Name" : "my-vpc"
+    }
 }
+
+# Subnet 1
+resource "aws_subnet" "subnet1" {
+    cidr_block = "172.16.0.0/18"
+    vpc_id = aws_vpc.my-vpc.id
+    map_public_ip_on_launch = "true"
+    availability_zone = data.aws_availability_zones.available.names[0]
+}
+
 resource "aws_instance" "web_server01" {
   ami = "ami-08c40ec9ead489470"
   instance_type = "t2.micro"
   key_name = "DeploymentKey"
   vpc_security_group_ids = [aws_security_group.web_ssh.id]
-  subnet_id = module.vpc.public_subnets[0]
+  subnet_id = aws_subnet.subnet1.id
   user_data = "${file("deploy.sh")}"
 
   tags = {
