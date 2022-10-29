@@ -51,7 +51,6 @@ pipeline {
    }
       stage('Apply') {
        steps {
-        keepRunning {
         withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
                         string(credentialsId: 'AWS_SECRET_KEY', variable: 'aws_secret_key')]) {
                             dir('intTerraform') {
@@ -60,7 +59,6 @@ pipeline {
          }
     }
    }
-      }
    stage('Notify') {
     steps {
       echo "Done"
@@ -71,6 +69,25 @@ pipeline {
       }
     }
   }
-
+   stage('Destroy') {
+    steps {
+    withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
+    string(credentialsId: 'AWS_SECRET_KEY', variable: 'aws_secret_key')]) {
+        dir('intTerraform') {
+            sh 'terraform destroy -auto-approve -var="aws_access_key=$aws_access_key" -var="aws_secret_key=$aws_secret_key"'
+            }
+        }
+    }
+   }
+   stage('Notify2') {
+    steps {
+      echo "Done"
+    }
+    post {
+      always {
+        emailext body: 'Terraform destroy complete', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Terraform destroy complete'
+      }
+    }
+  }
   }
  }
