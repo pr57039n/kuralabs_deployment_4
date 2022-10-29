@@ -1,7 +1,6 @@
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
-variable "name" {}
-variable "vpc_cidr" {}
+
 
 provider "aws" {
   access_key = var.aws_access_key
@@ -15,8 +14,8 @@ data "aws_availability_zones" "azs" {}
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = var.name
-  cidr = var.vpc_cidr
+  name = "my-vpc"
+  cidr = "10.0.0.0/16"
 
   azs             = data.aws_availability_zones.azs.names
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
@@ -26,7 +25,7 @@ module "vpc" {
   single_nat_gateway = true
 
   tags = {
-    Name = "${var.name}"
+    Name = "my-vpc"
   }
 }
 resource "aws_instance" "web_server01" {
