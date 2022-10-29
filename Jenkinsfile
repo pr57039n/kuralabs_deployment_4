@@ -89,12 +89,13 @@ pipeline {
     }
     post {
         success {
-            slackSend (message: "$BUILD_TAG has moved onto the 'test' stage")
+            slackSend (message: "$BUILD_TAG has completed the 'Apply' stage")
         }
         failure {
-            slackSend (message: "$BUILD_TAG has failed the 'build' stage")
+            slackSend (message: "$BUILD_TAG has failed the 'Apply' stage")
         }
    }
+      }
    stage('Notify') {
     steps {
       echo "Done"
@@ -126,4 +127,4 @@ pipeline {
     }
   }
   }
- }
+ 
