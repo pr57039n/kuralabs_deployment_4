@@ -65,6 +65,16 @@ pipeline {
          }
     }
    }
+   stage('Notify') {
+    steps {
+      echo "Done"
+    }
+    post {
+      always {
+        emailext body: 'Terraform Apply complete', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Build status'
+      }
+    }
+  }
    stage('Destroy') {
     steps {
     withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
@@ -75,5 +85,15 @@ pipeline {
         }
     }
    }
+   stage('Notify2') {
+    steps {
+      echo "Done"
+    }
+    post {
+      always {
+        emailext body: 'Terraform destroy complete', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Terraform destroy complete'
+      }
+    }
+  }
   }
  }
