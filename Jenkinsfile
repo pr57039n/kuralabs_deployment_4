@@ -12,6 +12,14 @@ pipeline {
         flask run &
         '''
      }
+     post {
+        success {
+            slackSend (message: "$BUILD_TAG has moved onto the 'test' stage")
+        }
+        failure {
+            slackSend (message: "$BUILD_TAG has failed the 'build' stage")
+        }
+     }
    }
     stage ('test') {
       steps {
@@ -25,7 +33,12 @@ pipeline {
         always {
           junit 'test-reports/results.xml'
         }
-       
+       success {
+            slackSend (message: "$BUILD_TAG has moved onto the 'init' stage")
+        }
+        failure {
+            slackSend (message: "$BUILD_TAG has failed the 'test' stage")
+        }
       }
     }
    
@@ -38,6 +51,14 @@ pipeline {
                             }
          }
     }
+    post {
+        success {
+            slackSend (message: "$BUILD_TAG has moved onto the 'plan' stage")
+        }
+        failure {
+            slackSend (message: "$BUILD_TAG has failed the 'Init' stage")
+        }
+    }
    }
       stage('Plan') {
        steps {
@@ -47,6 +68,14 @@ pipeline {
                               sh 'terraform plan -out plan.tfplan -var="aws_access_key=$aws_access_key" -var="aws_secret_key=$aws_secret_key"' 
                             }
          }
+    }
+    post {
+        success {
+            slackSend (message: "$BUILD_TAG has moved onto the 'Apply' stage")
+        }
+        failure {
+            slackSend (message: "$BUILD_TAG has failed the 'Plan' stage")
+        }
     }
    }
       stage('Apply') {
@@ -58,6 +87,13 @@ pipeline {
                             }
          }
     }
+    post {
+        success {
+            slackSend (message: "$BUILD_TAG has moved onto the 'test' stage")
+        }
+        failure {
+            slackSend (message: "$BUILD_TAG has failed the 'build' stage")
+        }
    }
    stage('Notify') {
     steps {
