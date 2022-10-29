@@ -33,7 +33,7 @@ resource "aws_instance" "web_server01" {
   instance_type = "t2.micro"
   key_name = "DeploymentKey"
   vpc_security_group_ids = [aws_security_group.web_ssh.id]
-  subnet_id = var.vpc.public_subnets[0]
+  subnet_id = [vpc.public_subnets.id[0]]
   user_data = "${file("deploy.sh")}"
 
   tags = {
