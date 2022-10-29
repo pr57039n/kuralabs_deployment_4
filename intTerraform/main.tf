@@ -21,6 +21,11 @@ resource "aws_vpc" "my-vpc" {
     }
 }
 
+# DATA
+data "aws_availability_zones" "available" {
+    state = "available"
+}
+
 # Subnet 1
 resource "aws_subnet" "subnet1" {
     cidr_block = "172.16.0.0/18"
